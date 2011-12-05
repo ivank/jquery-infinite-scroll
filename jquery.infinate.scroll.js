@@ -29,18 +29,11 @@
 	InfiniteScroll.prototype = {
 
 		init: function() {
-			$(window).scroll(this._scroll);
+			if(this.scroll)$(window).scroll(this._scroll);
 			this.$el.click(this.load_more);
 			this.$container = $(this.$el.data('container'));
 			this._url = this.$el.attr('href');
-			this.offset = typeof this.offset == 'string' ? parseInt(this.$el.attr(this.offset), 10) : this.offset;
-
-			if(this.extension)
-			{
-				var new_extension = this.extension;
-				var extra = this.extra;
-				this._url = this._url.replace(/(\.[a-z0-9]{1,4})?(\?.*)?$/, function(all, extension, query){return new_extension+(query ? query+'&' : '?')+extra;});	
-			}
+			this.step = typeof this.step == 'string' ? parseInt(this.$el.attr(this.step), 10) : this.step;
 		},
 
 		// Handle Scroll event
@@ -58,18 +51,15 @@
 			{
 				this.$el.addClass(this.loading_class);
 				this.start( e );
-				$.get(this._url, this._content);
+				$.get(this.url(), this._content);
 			}
 		},
 
 		// Handle ajax load
 		_content: function( data )
 		{
-			if(this.offset)
-				this._url = this._increment_offset(this.offset);
-
+			this.offset += this.step;
 			this.$el.removeClass(this.loading_class);
-
 			this.finish(data);
 		},
 
@@ -84,13 +74,9 @@
 			this.$content.append(content);
 		},
 
-		// Modify url to add offset
-		_increment_offset: function(offset){
-			return this._url
-				.replace(/(\&|\?)offset=(\d+)/, function(all, start, current_offset){
-					return start+'offset='+( parseInt(current_offset, 10) + parseInt(offset, 10) );
-				});
-			
+		// get the current url with query (and offset)
+		url: function(){
+			return this._url + (this._url.match(/\?/) ? '&' : '?') + this.query.replace('{offset}', this.offset);
 		},
 
 		// Bind a method so that it always gets the datepicker instance for
@@ -108,10 +94,11 @@
 	$.fn.inifinitescroll.InfinateScroll = InfiniteScroll;
 	$.fn.inifinitescroll.defaults = {
 		tollerance: 300,
-		extension: '',
-		offset: false,
-		loading_class: "loading",
-		extra: ''
+		scroll: true,
+		step: 10,
+		offset: 0,
+		query: 'offset={offset}',
+		loading_class: "loading"
 	};
 
 }( window.jQuery || window.ender );

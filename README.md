@@ -19,11 +19,11 @@ Now when you reaches the end of the screen, it will make an ajax request to the 
 There are several options:
 
 * __tollerance__ - defaults 300. The amount of pixels off the end of the screen that it starts loading more
-* __extension__ - defaults to ''. This is added to the end of the url to load a different type of asset, for example '.json'
-* __extra__ - defaults to ''. This will be added to the end of the url as a query parameter, for example '_ajax=true'
 * __loading_class__ defaults to 'loading'. Add this Css class to the load more link
 * __scroll__ - defaults to true. If you set this to false, will not trigger when the user reaches the end of the page, You will have to press the "load more" link.
-* __offset__ - defaults to false. Set the amount to increment on each load for the load more link. For example if it starts with index.html?offset=4, and you set offset: 4, the next content to load will be index.html?offset=8 If you set it as a string it will look for an attribute named like that fo the offset value 
+* __offset__ - defaults to 0. The starting offset of the collection.
+* __step__ - defaults to 10. The amount of items for each iteration. Increments offsets for each load more with this parameter. If the amount returned is smaller than that of __step__ then hide the load more button.
+* __query__ - defaults to 'offset={offset}' the additional query used on the url, {offset} is replaced with the current offset. You can add other query parameters here.
 
 You can also overwrite some methods to add additional functionality:
 
